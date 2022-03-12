@@ -40,10 +40,10 @@ def print_help():
           "     -o | --ofile [File path or name] | Writes the output to a file.\n"
           "     -w | --wordlist [File path or name] | Import your own wordlist to use instead of the default one.\n\n"
           "USAGE :\n"
-          "     3numList3r -d google.com\n"
-          "     3numList3r -d google.com -o outfile.md\n"
-          "     3numList3r -i domains.lst -o outfile.md\n"
-          "     3numList3r -w wordlist.txt -i domains.lst -o outfile.md\n")
+          "     Sub1337ster -d google.com\n"
+          "     Sub1337ster -d google.com -o outfile.md\n"
+          "     Sub1337ster -i domains.lst -o outfile.md\n"
+          "     Sub1337ster -w wordlist.txt -i domains.lst -o outfile.md\n")
 
 
 # Prints the error message

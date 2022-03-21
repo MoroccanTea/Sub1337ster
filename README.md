@@ -25,4 +25,5 @@ USAGE :
 - Create an account on https://www.ipinfodb.com/, go to my https://www.ipinfodb.com/account
 - Copy your API key
 - Edit the script and put it in the api_key variable
+- run `pip install -r requirements.txt` inside the project folder
 - Enjoy ;)

@@ -15,7 +15,7 @@ subdomains_file_name = 'subdomains.txt'
 subdomains_file = open(subdomains_file_name, "r")  # Subdomain file you want to use as a wordlist
 subdomains_list = []
 up_subdomains = []
-api_key = "c5284d72db3ab5b2f04174247ba7d4b3c57e66bc3fdc337a16df2c73a4bfe86e"  # Change this with your api key from ipinfodb.com
+api_key = ""  # Change this with your api key from ipinfodb.com
 ip_pattern = "\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"  # Changing this will break the code if you don't have a good regex
 output_path = "output.csv"  # Full path to output file
 
@@ -208,5 +208,4 @@ def print_error():  # Prints the error message
 if __name__ == "__main__":
     main()
 
-# TODO: fix CLI args
 # TODO: fix stats in Linux

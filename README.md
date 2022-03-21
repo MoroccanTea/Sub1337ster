@@ -5,7 +5,7 @@ A simple tool for subdomain enumeration
 
 # Commands :
 
-`HELP :
+HELP :
        -h | --help | Prints this message.
        -i | --ifile [File path or name] | Takes input from a file to use as domains.
        -d | --domain [Domain to test] | Start testing a domain.
@@ -15,7 +15,7 @@ USAGE :
        Sub1337ster -d google.com
        Sub1337ster -d google.com -o outfile.md
        Sub1337ster -i domains.lst -o outfile.md
-       Sub1337ster -w wordlist.txt -i domains.lst -o outfile.md`
+       Sub1337ster -w wordlist.txt -i domains.lst -o outfile.md
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 

@@ -12,10 +12,10 @@ HELP :
        -o | --ofile [File path or name] | Writes the output to a file.
        -w | --wordlist [File path or name] | Import your own wordlist to use instead of the default one.
 USAGE :
-       Sub1337ster -d google.com
-       Sub1337ster -d google.com -o outfile.md
-       Sub1337ster -i domains.lst -o outfile.md
-       Sub1337ster -w wordlist.txt -i domains.lst -o outfile.md
+       Sub1337ster.py -d google.com
+       Sub1337ster.py -d google.com -o outfile.csv
+       Sub1337ster.py -i domains.lst -o outfile.csv
+       Sub1337ster.py -w wordlist.txt -i domains.lst -o outfile.csv
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 

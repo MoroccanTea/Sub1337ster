@@ -4,14 +4,13 @@ import argparse
 import csv
 import logging
 import os
-import platform
 import re
 import socket
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
-from subprocess import Popen, PIPE
+from urllib.parse import quote
 
 import requests
 from termcolor import colored
@@ -187,19 +186,47 @@ def geolocate_ip(ip: str, api_url: str, api_key: str) -> dict:
     :param api_key: API key from config.
     :return: A dict with geolocation fields or {} on error.
     """
-    if not ip:
+    if not ip or not re.match(IP_PATTERN, ip):
         return {}
-    full_url = f"{api_url}?key={api_key}&ip={ip}&format=json"
-    try:
-        resp = requests.get(full_url, timeout=5)
-        resp.raise_for_status()
-        data = resp.json()
-        # Filter out some fields
-        excluded_keys = {'statusCode', 'statusMessage', 'ipAddress'}
-        return {k: v for k, v in data.items() if k not in excluded_keys}
-    except requests.RequestException as e:
-        logging.debug(f"Geolocation API error for {ip}: {str(e)}")
-        return {}
+    
+    # Sanitize inputs
+    safe_ip = quote(ip)
+    safe_key = quote(api_key)
+    
+    full_url = f"{api_url}?key={safe_key}&ip={safe_ip}&format=json"
+    
+    # Retry logic with rate limiting
+    max_retries = 3
+    retry_delay = 1  # seconds
+    
+    for attempt in range(max_retries):
+        try:
+            resp = requests.get(full_url, timeout=5)
+            resp.raise_for_status()
+            
+            # Rate limit based on config
+            rate_limit = int(config.get_rate_limit())
+            if rate_limit > 0:
+                time.sleep(1 / rate_limit)
+                
+            data = resp.json()
+            
+            # Validate response structure
+            if not isinstance(data, dict):
+                raise ValueError("Invalid API response format")
+                
+            # Filter out some fields
+            excluded_keys = {'statusCode', 'statusMessage', 'ipAddress'}
+            return {k: v for k, v in data.items() if k not in excluded_keys}
+            
+        except requests.RequestException as e:
+            if attempt == max_retries - 1:
+                logging.debug(f"Geolocation API error for {ip}: {str(e)}")
+                return {}
+            time.sleep(retry_delay * (attempt + 1))
+        except ValueError as e:
+            logging.debug(f"Invalid API response for {ip}: {str(e)}")
+            return {}
 
 
 def check_subdomain(sub: str, domain: str, api_url: str, api_key: str) -> dict:

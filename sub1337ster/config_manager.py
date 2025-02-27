@@ -1,5 +1,6 @@
 import configparser
 import os
+import re
 from pathlib import Path
 
 class ConfigManager:
@@ -43,8 +44,8 @@ class ConfigManager:
 
     def validate_config(self):
         """
-        Ensures required sections and keys exist in the config. 
-        Raises ValueError if something is missing.
+        Ensures required sections and keys exist in the config and validates their values.
+        Raises ValueError if something is missing or invalid.
         """
         required_sections = ['API', 'Settings']
         for section in required_sections:
@@ -53,13 +54,33 @@ class ConfigManager:
 
         required_keys = {
             'API': ['key', 'url'],
-            'Settings': ['output_path', 'subdomains_file']
+            'Settings': ['output_path', 'subdomains_file', 'rate_limit']
         }
 
+        # Validate required keys
         for section, keys in required_keys.items():
             for key in keys:
                 if key not in self.config[section]:
                     raise ValueError(f"Missing required key: {section}.{key}")
+
+        # Validate API URL format
+        api_url = self.config['API']['url']
+        if not re.match(r'^https?://[^\s/$.?#].[^\s]*$', api_url):
+            raise ValueError(f"Invalid API URL format: {api_url}")
+
+        # Validate rate limit
+        try:
+            rate_limit = int(self.config['Settings']['rate_limit'])
+            if rate_limit < 1 or rate_limit > 100:
+                raise ValueError("Rate limit must be between 1 and 100 requests per second")
+        except ValueError:
+            raise ValueError("Invalid rate limit value - must be an integer")
+
+        # Validate file paths
+        for path_key in ['output_path', 'subdomains_file']:
+            path = self.config['Settings'][path_key]
+            if not re.match(r'^[a-zA-Z0-9_\-\.\/\\]+$', path):
+                raise ValueError(f"Invalid characters in {path_key} path")
 
     def get_api_key(self) -> str:
         """Return the geolocation API key."""
@@ -76,3 +97,7 @@ class ConfigManager:
     def get_subdomains_file(self) -> Path:
         """Return the subdomains file path."""
         return Path(self._subdomains_file)
+
+    def get_rate_limit(self) -> int:
+        """Return the rate limit for API calls."""
+        return int(self.config['Settings']['rate_limit'])
